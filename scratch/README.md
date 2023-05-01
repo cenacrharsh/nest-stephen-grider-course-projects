@@ -1,0 +1,1 @@
+# Run Command: `npx ts-node-dev src/main.ts`
