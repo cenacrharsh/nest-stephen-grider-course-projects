@@ -1,0 +1,31 @@
+# Project Setup
+
+npm i -g @nestjs/cli
+nest new project-name
+
+or
+
+npx @nestjs/cli new project-name
+npx @nestjs/cli new . (to setup project in an empty folder)
+
+<---------- use 'npx @nestjs/cli' instead of nest in all further commands --------->
+
+# Create Module from NEST CLI
+
+nest generate module module-name
+
+eg. nest generate module messages
+
+# Create Controller
+
+nest g controller controller-name
+
+# Create Controller inside of an existing module
+
+nest generate controller folder-name/class-name --flat
+
+eg. nest generate controller messages/messages --flat
+
+# Create Service
+
+nest generate service service-name / nest g service service-name 
