@@ -11,12 +11,14 @@ import {
     Session,
 } from '@nestjs/common';
 
-import { Serialize } from './interceptors/serialize.interceptor';
+import { Serialize } from '../interceptors/serialize.interceptor';
 import { UsersService } from './users.service';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
+import { CurrentUser } from './decorators/current-user.decorator';
+import { User } from './user.entity';
 
 @Controller('auth')
 @Serialize(UserDto)
@@ -26,10 +28,17 @@ export class UsersController {
         private authService: AuthService,
     ) {}
 
+    /*
     @Get('/whoami')
     whoaAmI(@Session() session: any) {
         return this.usersService.findOne(session.userId);
         //*  return this.usersService.findOne(null) -> return the first user in db, so not working in case of no user is logged in
+    }
+    */
+
+    @Get('whoami')
+    whoAmI(@CurrentUser() user: User) {
+        return user;
     }
 
     @Post('/signout')
