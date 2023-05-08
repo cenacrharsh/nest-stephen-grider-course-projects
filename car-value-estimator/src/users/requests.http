@@ -39,3 +39,11 @@ Content-Type: application/json
     "email": "new23@gmail.com",
     "password": "newPassword"
 }
+
+### Set color in cookie
+
+Get http://localhost:3000/auth/colors/red
+
+### Get color stored in cookie
+
+Get http://localhost:3000/auth/colors
