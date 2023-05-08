@@ -29,6 +29,12 @@ export class UsersController {
     @Get('/whoami')
     whoaAmI(@Session() session: any) {
         return this.usersService.findOne(session.userId);
+        //*  return this.usersService.findOne(null) -> return the first user in db, so not working in case of no user is logged in
+    }
+
+    @Post('/signout')
+    signOut(@Session() session: any) {
+        session.userId = null;
     }
 
     @Post('/signup')

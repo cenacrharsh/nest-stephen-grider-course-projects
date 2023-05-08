@@ -22,6 +22,10 @@ Content-Type: application/json
     "password": "abcdefgh"
 }
 
+### Signout
+
+Post http://localhost:3000/auth/signout
+
 ### Find a particular user with the given ID
 
 GET http://localhost:3000/auth/3

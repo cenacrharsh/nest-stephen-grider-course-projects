@@ -32,6 +32,10 @@ export class UsersService {
 
     //! return one record or null
     findOne(id: number) {
+        //* to handle signout functionality
+        if (!id) {
+            return null;
+        }
         return this.repo.findOne({
             where: {
                 id: id,
