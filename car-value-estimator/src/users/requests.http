@@ -8,7 +8,7 @@ Content-Type: application/json
     "password": "abcdefgh"
 }
 
-### Signin User
+### Signin as an existing user (updated cookie headers are sent only if session object is actually changed)
 
 POST http://localhost:3000/auth/signin
 Content-Type: application/json
@@ -28,7 +28,7 @@ GET http://localhost:3000/auth?email=hashing@gmail.com
 
 ### Delete a user with the given id
 
-DELETE http://localhost:3000/auth/8
+DELETE http://localhost:3000/auth/9
 
 ### Update a user
 
