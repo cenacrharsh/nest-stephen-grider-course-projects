@@ -12,6 +12,7 @@ import {
 
 import { Serialize } from './interceptors/serialize.interceptor';
 import { UsersService } from './users.service';
+import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
@@ -19,12 +20,20 @@ import { UserDto } from './dtos/user.dto';
 @Controller('auth')
 @Serialize(UserDto)
 export class UsersController {
-    constructor(private usersService: UsersService) {}
+    constructor(
+        private usersService: UsersService,
+        private authService: AuthService,
+    ) {}
 
     @Post('/signup')
     createUser(@Body() body: CreateUserDto) {
         console.log(body);
-        this.usersService.create(body.email, body.password);
+        this.authService.signup(body.email, body.password);
+    }
+
+    @Post('/signin')
+    signin(@Body() body: CreateUserDto) {
+        return this.authService.signin(body.email, body.password);
     }
 
     //* id's are numbers, but everything in incoming req comes as a string

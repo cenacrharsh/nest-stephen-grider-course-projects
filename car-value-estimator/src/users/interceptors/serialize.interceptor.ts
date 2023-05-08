@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { plainToInstance } from 'class-transformer';
+import { plainToClass, plainToInstance } from 'class-transformer';
 
 //> to replace type any, this means any class would be excepted and nothing else
 interface ClassConstructor {
@@ -27,12 +27,14 @@ export class SerializeInterceptor implements NestInterceptor {
         handler: CallHandler,
     ): Observable<any> {
         //* whatever we put here runs before a request is handled by the request handler
-        console.log('I am running before the req handler', context);
+        console.log('I am running before the req handler');
+        // console.log('I am running before the req handler', context);
 
         return handler.handle().pipe(
             map((data: any) => {
                 //* whatever we put here runs before the response is sent out
                 console.log('I am running before response is sent out', data);
+                // console.log('I am running before response is sent out', data);
 
                 return plainToInstance(this.dto, data, {
                     excludeExtraneousValues: true,
