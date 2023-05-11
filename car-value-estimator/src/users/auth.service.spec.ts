@@ -7,19 +7,32 @@ import { User } from './user.entity';
 
 describe('AuthService', () => {
     let service: AuthService;
+
+    //* Partial<UsersService> makes sure we are implementing the right way
     let fakeUsersService: Partial<UsersService>;
 
     beforeEach(async () => {
+        const users: User[] = [];
+
         //> create a fake copy of the users service
-        //* Partial<UsersService> makes sure we are implementing the right way
         fakeUsersService = {
-            find: () => Promise.resolve([]),
-            create: (email: string, password: string) =>
-                Promise.resolve({
-                    id: 1,
+            find: (email: string) => {
+                const filteredUsers = users.filter(
+                    (user) => user.email === email,
+                );
+
+                return Promise.resolve(filteredUsers);
+            },
+            create: (email: string, password: string) => {
+                const user = {
+                    id: Math.floor(Math.random() * 999999),
                     email,
                     password,
-                } as User), //* telling ts to treat it as user entity although hooks are missing which we don't need for testing
+                } as User;
+                users.push(user);
+
+                return Promise.resolve(user);
+            },
         };
 
         //> creating a new DI container
@@ -53,10 +66,10 @@ describe('AuthService', () => {
 
     it('throws an error if user signs up with email that is in use', async () => {
         //* redefine find() func just for this test
-        fakeUsersService.find = () =>
-            Promise.resolve([
-                { id: 1, email: 'email', password: 'password' } as User,
-            ]);
+        // fakeUsersService.find = () =>
+        //     Promise.resolve([
+        //         { id: 1, email: 'email', password: 'password' } as User,
+        //     ]);
 
         //# New version of Jest doesn't allow async/await and done together
         //! Jest doesn't work well with async code that is supposed to throw an error
@@ -68,8 +81,9 @@ describe('AuthService', () => {
         // }
 
         //> Assert that the service throws a BadRequestException with the correct message
+        await service.signup('email@email.com', 'Pass@123');
         await expect(
-            service.signup('test@test.com', 'Pass@123'),
+            service.signup('email@email.com', 'Pass@123'),
         ).rejects.toThrow(new BadRequestException('Email is already in use'));
     });
 
@@ -86,32 +100,35 @@ describe('AuthService', () => {
     });
 
     it('throws if an invalid password is provided', async () => {
-        fakeUsersService.find = () =>
-            Promise.resolve([
-                {
-                    id: 1,
-                    email: 'email@email.com',
-                    password: 'password',
-                } as User,
-            ]);
+        // fakeUsersService.find = () =>
+        //     Promise.resolve([
+        //         {
+        //             id: 1,
+        //             email: 'email@email.com',
+        //             password: 'password',
+        //         } as User,
+        //     ]);
 
+        await service.signup('test@test.com', 'password');
         await expect(
-            service.signin('email@email.com', 'differentPassword'),
+            service.signin('test@test.com', 'differentPassword'),
         ).rejects.toThrow(new BadRequestException('wrong password'));
     });
 
     it('returns a user if correct password is provided', async () => {
-        fakeUsersService.find = () =>
-            Promise.resolve([
-                {
-                    id: 1,
-                    email: 'email@email.com',
-                    password:
-                        '091a1bc56e11d3b5.e1163a8e61c79a598dd5805285ce12ad4be6c1830a7b101237817d049e6d799d',
-                } as User,
-            ]);
+        // fakeUsersService.find = () =>
+        //     Promise.resolve([
+        //         {
+        //             id: 1,
+        //             email: 'email@email.com',
+        //             password:
+        //                 '091a1bc56e11d3b5.e1163a8e61c79a598dd5805285ce12ad4be6c1830a7b101237817d049e6d799d',
+        //         } as User,
+        //     ]); //* telling ts to treat it as user entity although hooks are missing which we don't need for testing
 
-        const user = await service.signin('email@email.com', 'abcdefgh');
+        await service.signup('email@email.com', 'password');
+
+        const user = await service.signin('email@email.com', 'password');
         expect(user).toBeDefined();
     });
 });
