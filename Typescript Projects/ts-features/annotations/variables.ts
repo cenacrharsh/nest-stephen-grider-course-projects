@@ -1,4 +1,4 @@
-//! Type Annotations
+//# Type Annotations for Variables
 let apples: number = 5;
 
 let speed: string = "fast";
